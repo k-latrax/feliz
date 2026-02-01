@@ -1,6 +1,5 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import time
 
 # 1. Configuración de la página
 st.set_page_config(
@@ -10,13 +9,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. CSS AVANZADO (Diseño y Responsividad)
+# 2. CSS AVANZADO (Diseño, Fuentes y Centrado Absoluto)
 st.markdown("""
     <style>
     /* Importar fuente tipo 'tiza' de Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
-    /* Fondo general de la aplicación (Pizarra verde con viñeta para dar profundidad) */
+    /* Fondo general */
     .stApp {
         background-color: #2b4e3e;
         background-image: radial-gradient(circle, #3a6351 0%, #1e3b2e 100%);
@@ -31,9 +30,10 @@ st.markdown("""
     /* Título Principal */
     .title-text {
         text-align: center;
-        font-size: 50px !important;
+        font-size: 45px !important;
         margin-bottom: 0px;
         text-shadow: 2px 2px 4px #000000;
+        line-height: 1.2;
     }
 
     /* Subtítulo (Nombre) */
@@ -41,58 +41,70 @@ st.markdown("""
         text-align: center;
         font-size: 60px !important;
         color: #ffcc00 !important; /* Amarillo */
-        margin-top: -20px;
+        margin-top: -10px;
         text-shadow: 2px 2px 0px #4a4a4a;
         border-bottom: 2px dashed #f0f0f0;
         padding-bottom: 20px;
+        margin-bottom: 20px;
     }
 
     /* Cuerpo del mensaje */
     .message-text {
         text-align: center;
-        font-size: 28px !important;
-        margin-top: 20px;
-        line-height: 1.5;
+        font-size: 26px !important;
+        line-height: 1.4;
     }
 
     /* Emojis grandes */
     .big-emojis {
-        font-size: 50px;
+        font-size: 45px;
         text-align: center;
         margin-top: 10px;
         margin-bottom: 30px;
     }
 
-    /* ESTILO DEL BOTÓN (Borrador de pizarra) */
-    .stButton > button {
-        width: 100%;
-        background-color: #8B4513 !important; /* Color madera/borrador */
-        color: white !important;
-        border: 2px solid #deb887;
-        font-size: 24px !important;
-        padding: 10px 20px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
-        transition: transform 0.2s;
-    }
+    /* --- CORRECCIÓN DEL BOTÓN (Centrado Absoluto) --- */
     
-    .stButton > button:hover {
-        transform: scale(1.02);
-        background-color: #A0522D !important;
-        border-color: #fff;
+    /* 1. El contenedor del botón se vuelve flexible y centra su contenido */
+    div.stButton {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
     }
 
-    /* MENSAJE DE FELICITACIÓN FINAL (Reemplazo de st.success) */
+    /* 2. El botón en sí mismo */
+    div.stButton > button {
+        background-color: #8B4513 !important; /* Color madera */
+        color: white !important;
+        border: 2px solid #deb887 !important;
+        font-size: 22px !important;
+        padding: 12px 30px !important; /* Relleno para que se vea bien */
+        border-radius: 12px !important;
+        box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
+        transition: transform 0.2s;
+        /* Quitamos el width: 100% para que no se estire feo, 
+           ahora el tamaño depende del texto y se centra solo */
+        width: auto !important; 
+    }
+    
+    div.stButton > button:hover {
+        transform: scale(1.05);
+        background-color: #A0522D !important;
+        border-color: #fff !important;
+    }
+
+    /* MENSAJE DE FELICITACIÓN FINAL */
     .final-message {
         text-align: center;
-        background-color: rgba(255, 255, 255, 0.1); /* Transparente */
+        background-color: rgba(255, 255, 255, 0.1);
         border: 2px solid #ffcc00;
         border-radius: 15px;
         padding: 20px;
-        margin-top: 20px;
-        font-size: 35px !important;
+        margin-top: 30px; /* Separación del botón */
+        font-size: 32px !important;
         color: #ffcc00 !important;
         animation: popIn 0.5s ease-out;
+        width: 100%; /* Asegura que el mensaje ocupe el ancho disponible */
     }
 
     @keyframes popIn {
@@ -101,7 +113,7 @@ st.markdown("""
         100% { transform: scale(1); }
     }
     
-    /* Ocultar elementos molestos de Streamlit */
+    /* Ocultar elementos de la interfaz de Streamlit */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -109,7 +121,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 3. JAVASCRIPT DE LLUVIA (Optimizado)
+# 3. JAVASCRIPT DE LLUVIA (Sin cambios, funciona bien)
 school_rain_js = """
 <script>
     function throwSchoolItems() {
@@ -142,7 +154,7 @@ school_rain_js = """
             item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
             const size = Math.random() * 40 + 20; 
             item.style.fontSize = size + 'px';
-            item.style.left = Math.random() * 95 + 'vw'; // Evitar scroll horizontal
+            item.style.left = Math.random() * 95 + 'vw'; 
             const duration = Math.random() * 3 + 3;
             item.style.animation = `fallRotate ${duration}s linear forwards`;
             item.style.animationDelay = Math.random() * 2 + 's';
@@ -155,16 +167,14 @@ school_rain_js = """
 </script>
 """
 
-# --- ESTRUCTURA VISUAL (Layout) ---
+# --- ESTRUCTURA VISUAL ---
 
-# Espacio superior
-st.write("")
+st.write("") # Espaciador superior
 
-# Títulos con clases personalizadas
+# Textos
 st.markdown('<p class="title-text">✨ ¡Feliz Cumpleaños! ✨</p>', unsafe_allow_html=True)
 st.markdown('<p class="name-text">Sra. Flor</p>', unsafe_allow_html=True)
 
-# Mensaje
 st.markdown("""
     <div class="message-text">
         <p>Que tenga un lindo día.</p>
@@ -175,25 +185,16 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# --- BOTÓN CENTRADO ---
-# Usamos columnas vacías a los lados para centrar.
-# En móvil (pantalla pequeña), las columnas se adaptan.
-col_izq, col_centro, col_der = st.columns([1, 2, 1])
-
-with col_centro:
-    presionado = st.button("🎁 Presione aquí 🎁")
+# --- BOTÓN (Sin columnas, centrado por CSS) ---
+presionado = st.button("🎁 Presione aquí 🎁")
 
 # --- LÓGICA AL PRESIONAR ---
 if presionado:
-    # 1. Globos nativos
     st.balloons()
-    
-    # 2. Lluvia escolar (JavaScript)
     components.html(school_rain_js, height=0, width=0)
     
-    # 3. Mensaje Final CENTRADO y ESTILIZADO (Sin usar st.success)
     st.markdown("""
         <div class="final-message">
-            ¡Muchas Felicidades! <br>❤️
+            ¡Muchas Felicidades Profe! <br> 🍎❤️
         </div>
     """, unsafe_allow_html=True)
