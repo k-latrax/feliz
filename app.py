@@ -195,6 +195,6 @@ if presionado:
     
     st.markdown("""
         <div class="final-message">
-            ¡Muchas Felicidades Profe! <br> 🍎❤️
+            ¡Muchas Felicidades! <br>❤️
         </div>
     """, unsafe_allow_html=True)
