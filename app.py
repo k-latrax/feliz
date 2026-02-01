@@ -1,5 +1,6 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import random  # Importante para que la animación salga siempre
 
 # 1. Configuración de la página
 st.set_page_config(
@@ -9,169 +10,168 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. CSS AVANZADO (Diseño, Fuentes y Centrado Absoluto)
+# 2. CSS MAESTRO (Centrado forzoso y Diseño)
 st.markdown("""
     <style>
-    /* Importar fuente tipo 'tiza' de Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
-    /* Fondo general */
+    /* Fondo */
     .stApp {
         background-color: #2b4e3e;
         background-image: radial-gradient(circle, #3a6351 0%, #1e3b2e 100%);
     }
 
-    /* Estilos de texto globales */
-    h1, h2, p, div, span, button {
+    /* Tipografía */
+    * {
         font-family: 'Patrick Hand', cursive !important;
-        color: #f0f0f0 !important;
+        color: #f0f0f0;
     }
 
-    /* Título Principal */
+    /* Títulos */
     .title-text {
         text-align: center;
         font-size: 45px !important;
-        margin-bottom: 0px;
         text-shadow: 2px 2px 4px #000000;
-        line-height: 1.2;
+        margin-bottom: 0;
     }
-
-    /* Subtítulo (Nombre) */
+    
     .name-text {
         text-align: center;
         font-size: 60px !important;
-        color: #ffcc00 !important; /* Amarillo */
-        margin-top: -10px;
+        color: #ffcc00 !important;
         text-shadow: 2px 2px 0px #4a4a4a;
         border-bottom: 2px dashed #f0f0f0;
         padding-bottom: 20px;
-        margin-bottom: 20px;
-    }
-
-    /* Cuerpo del mensaje */
-    .message-text {
-        text-align: center;
-        font-size: 26px !important;
-        line-height: 1.4;
-    }
-
-    /* Emojis grandes */
-    .big-emojis {
-        font-size: 45px;
-        text-align: center;
-        margin-top: 10px;
         margin-bottom: 30px;
     }
 
-    /* --- CORRECCIÓN DEL BOTÓN (Centrado Absoluto) --- */
+    /* Texto del mensaje */
+    .message-text {
+        text-align: center;
+        font-size: 26px !important;
+    }
+
+    /* Emojis */
+    .big-emojis {
+        font-size: 45px;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    /* --- CORRECCIÓN DEFINITIVA DEL BOTÓN --- */
     
-    /* 1. El contenedor del botón se vuelve flexible y centra su contenido */
-    div.stButton {
+    /* Esto centra el contenedor del botón */
+    .stButton {
         display: flex;
         justify-content: center;
-        margin-top: 20px;
+        width: 100%;
     }
 
-    /* 2. El botón en sí mismo */
-    div.stButton > button {
-        background-color: #8B4513 !important; /* Color madera */
+    /* Esto da estilo al botón y asegura que no se estire feo en móvil */
+    .stButton > button {
+        background-color: #8B4513 !important;
         color: white !important;
         border: 2px solid #deb887 !important;
-        font-size: 22px !important;
-        padding: 12px 30px !important; /* Relleno para que se vea bien */
-        border-radius: 12px !important;
-        box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
-        transition: transform 0.2s;
-        /* Quitamos el width: 100% para que no se estire feo, 
-           ahora el tamaño depende del texto y se centra solo */
-        width: auto !important; 
-    }
-    
-    div.stButton > button:hover {
-        transform: scale(1.05);
-        background-color: #A0522D !important;
-        border-color: #fff !important;
+        font-size: 24px !important;
+        padding: 12px 40px !important;
+        border-radius: 15px !important;
+        box-shadow: 0px 5px 0px #5e2f0d !important; /* Efecto 3D */
+        transition: all 0.1s;
+        margin: 0 auto !important; /* Centrado extra de seguridad */
+        display: block !important;
     }
 
-    /* MENSAJE DE FELICITACIÓN FINAL */
+    .stButton > button:active {
+        box-shadow: 0px 2px 0px #5e2f0d !important;
+        transform: translateY(3px);
+    }
+
+    /* Mensaje Final */
     .final-message {
         text-align: center;
-        background-color: rgba(255, 255, 255, 0.1);
         border: 2px solid #ffcc00;
         border-radius: 15px;
         padding: 20px;
-        margin-top: 30px; /* Separación del botón */
-        font-size: 32px !important;
+        margin-top: 30px;
+        font-size: 30px !important;
         color: #ffcc00 !important;
-        animation: popIn 0.5s ease-out;
-        width: 100%; /* Asegura que el mensaje ocupe el ancho disponible */
+        animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     @keyframes popIn {
         0% { transform: scale(0); opacity: 0; }
-        80% { transform: scale(1.1); opacity: 1; }
-        100% { transform: scale(1); }
+        100% { transform: scale(1); opacity: 1; }
     }
     
-    /* Ocultar elementos de la interfaz de Streamlit */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
+    /* Ocultar elementos de Streamlit */
+    #MainMenu, header, footer {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
 
-# 3. JAVASCRIPT DE LLUVIA (Sin cambios, funciona bien)
-school_rain_js = """
-<script>
-    function throwSchoolItems() {
-        const doc = window.parent.document;
-        const emojis = ['✏️', '📚', '🍎', '📏', '📎', '🎓', '💯', '🌟'];
-        
-        const container = doc.createElement('div');
-        container.style.position = 'fixed';
-        container.style.top = '0';
-        container.style.left = '0';
-        container.style.width = '100vw';
-        container.style.height = '100vh';
-        container.style.pointerEvents = 'none';
-        container.style.zIndex = '99999';
-        doc.body.appendChild(container);
+# 3. FUNCIÓN GENERADORA DE LLUVIA (Con truco anti-cache)
+def generar_lluvia():
+    # Generamos un ID único cada vez para engañar al navegador
+    unique_id = random.randint(0, 1000000)
+    
+    js_code = f"""
+    <div id="rain-container-{unique_id}"></div>
+    <script>
+        (function() {{
+            const doc = window.parent.document;
+            const emojis = ['✏️', '📚', '🍎', '📏', '📎', '🎓', '💯', '🌟', '💖'];
+            
+            // Si ya existe un contenedor viejo, bórralo (limpieza)
+            const oldContainer = doc.getElementById('school-rain-container');
+            if (oldContainer) oldContainer.remove();
 
-        const styleSheet = doc.createElement("style");
-        styleSheet.innerText = `
-            @keyframes fallRotate {
-                0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-                100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-            }
-            .school-item { position: absolute; top: -10vh; }
-        `;
-        doc.head.appendChild(styleSheet);
+            const container = doc.createElement('div');
+            container.id = 'school-rain-container';
+            container.style.position = 'fixed';
+            container.style.top = '0';
+            container.style.left = '0';
+            container.style.width = '100vw';
+            container.style.height = '100vh';
+            container.style.pointerEvents = 'none';
+            container.style.zIndex = '99999';
+            doc.body.appendChild(container);
 
-        for (let i = 0; i < 60; i++) {
-            const item = doc.createElement('div');
-            item.classList.add('school-item');
-            item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            const size = Math.random() * 40 + 20; 
-            item.style.fontSize = size + 'px';
-            item.style.left = Math.random() * 95 + 'vw'; 
-            const duration = Math.random() * 3 + 3;
-            item.style.animation = `fallRotate ${duration}s linear forwards`;
-            item.style.animationDelay = Math.random() * 2 + 's';
-            container.appendChild(item);
-        }
-        
-        setTimeout(() => { container.remove(); styleSheet.remove(); }, 6000);
-    }
-    throwSchoolItems();
-</script>
-"""
+            const styleSheet = doc.createElement("style");
+            styleSheet.innerText = `
+                @keyframes fallRotate {{
+                    0% {{ transform: translateY(-10vh) rotate(0deg); opacity: 1; }}
+                    100% {{ transform: translateY(110vh) rotate(720deg); opacity: 0; }}
+                }}
+                .school-item {{ position: absolute; top: -10vh; }}
+            `;
+            doc.head.appendChild(styleSheet);
+
+            for (let i = 0; i < 60; i++) {{
+                const item = doc.createElement('div');
+                item.classList.add('school-item');
+                item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                const size = Math.random() * 40 + 20; 
+                item.style.fontSize = size + 'px';
+                item.style.left = Math.random() * 90 + 'vw'; 
+                const duration = Math.random() * 3 + 3;
+                item.style.animation = `fallRotate ${{duration}}s linear forwards`;
+                item.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(item);
+            }}
+            
+            // Limpieza automática
+            setTimeout(() => {{ 
+                container.remove(); 
+                styleSheet.remove(); 
+            }}, 6000);
+        }})();
+    </script>
+    """
+    return js_code
 
 # --- ESTRUCTURA VISUAL ---
 
-st.write("") # Espaciador superior
+st.write("") 
 
-# Textos
 st.markdown('<p class="title-text">✨ ¡Feliz Cumpleaños! ✨</p>', unsafe_allow_html=True)
 st.markdown('<p class="name-text">Sra. Flor</p>', unsafe_allow_html=True)
 
@@ -185,13 +185,14 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# --- BOTÓN (Sin columnas, centrado por CSS) ---
+# --- BOTÓN ---
+# Nota: Ya no usamos columnas, el CSS se encarga de centrarlo
 presionado = st.button("🎁 Presione aquí 🎁")
 
-# --- LÓGICA AL PRESIONAR ---
 if presionado:
     st.balloons()
-    components.html(school_rain_js, height=0, width=0)
+    # Llamamos a la función con el truco del ID aleatorio
+    components.html(generar_lluvia(), height=0, width=0)
     
     st.markdown("""
         <div class="final-message">
